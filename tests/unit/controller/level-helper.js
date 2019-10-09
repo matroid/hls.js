@@ -199,5 +199,17 @@ describe('LevelHelper Tests', function () {
       const actual = LevelHelper.computeReloadInterval(oldPlaylist, newPlaylist, 1000);
       expect(actual).to.equal(2500);
     });
+
+    it('returns the maxReloadInterval if it is less than the computed reload interval', function () {
+      const oldPlaylist = generatePlaylist([1, 2]);
+      const newPlaylist = generatePlaylist([3, 4]);
+      newPlaylist.averagetargetduration = 25;
+      const configMaxInterval = 10000;
+
+      const clock = sandbox.useFakeTimers();
+      clock.tick(9000);
+      const actual = LevelHelper.computeReloadInterval(oldPlaylist, newPlaylist, 1000, configMaxInterval);
+      expect(actual).to.equal(10000);
+    });
   });
 });

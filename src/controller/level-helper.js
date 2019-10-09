@@ -211,7 +211,7 @@ export function adjustSliding (oldPlaylist, newPlaylist) {
   }
 }
 
-export function computeReloadInterval (currentPlaylist, newPlaylist, lastRequestTime) {
+export function computeReloadInterval (currentPlaylist, newPlaylist, lastRequestTime, maxInterval) {
   let reloadInterval = 1000 * (newPlaylist.averagetargetduration ? newPlaylist.averagetargetduration : newPlaylist.targetduration);
   const minReloadInterval = reloadInterval / 2;
   if (currentPlaylist && newPlaylist.endSN === currentPlaylist.endSN) {
@@ -224,6 +224,11 @@ export function computeReloadInterval (currentPlaylist, newPlaylist, lastRequest
   if (lastRequestTime) {
     reloadInterval = Math.max(minReloadInterval, reloadInterval - (window.performance.now() - lastRequestTime));
   }
+
+  if (maxInterval) {
+    reloadInterval = Math.min(reloadInterval, maxInterval);
+  }
+
   // in any case, don't reload more than half of target duration
   return Math.round(reloadInterval);
 }
